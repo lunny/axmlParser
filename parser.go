@@ -74,11 +74,11 @@ func (parser *Parser) IsValid(header []byte) bool {
 }
 
 func (parser *Parser) Parse(data []byte) error {
-	var word0 int
+	var word0 int64
 	parser.Data = data
 
 	for parser.ParserOffset < len(parser.Data) {
-		word0 = parser.getLEWord(parser.ParserOffset)
+		word0 = int64(parser.getLEWord(parser.ParserOffset))
 		switch word0 {
 		case WORD_START_DOCUMENT:
 			parser.parseStartDocument()
@@ -229,7 +229,7 @@ func (parser *Parser) parseStartTag() {
 
 	name := parser.getString(nameIdx)
 	var uri, qname string
-	if uriIdx == 0xFFFFFFFF {
+	if int64(uriIdx) == 0xFFFFFFFF {
 		uri = ""
 		qname = name
 	} else {
@@ -277,7 +277,7 @@ func (parser *Parser) parseAttribute() *Attribute {
 	attr := new(Attribute)
 	attr.Name = parser.getString(attrNameIdx)
 
-	if attrNSIdx == 0xFFFFFFFF {
+	if int64(attrNSIdx) == 0xFFFFFFFF {
 		attr.Namespace = ""
 		attr.Prefix = ""
 	} else {
@@ -288,7 +288,7 @@ func (parser *Parser) parseAttribute() *Attribute {
 		}
 	}
 
-	if attrValueIdx == 0xFFFFFFFF {
+	if int64(attrValueIdx) == 0xFFFFFFFF {
 		attr.Value = parser.getAttributeValue(attrType, attrData)
 	} else {
 		attr.Value = parser.getString(attrValueIdx)
@@ -340,7 +340,7 @@ func (parser *Parser) parseEndTag() {
 
 	name := parser.getString(nameIdx)
 	var uri string
-	if uriIdx == 0xFFFFFFFF {
+	if int64(uriIdx) == 0xFFFFFFFF {
 		uri = ""
 	} else {
 		uri = parser.getString(uriIdx)
@@ -403,7 +403,7 @@ func (parser *Parser) getStringFromStringTable(offset int) string {
  *         off.
  */
 func (parser *Parser) getLEWord(off int) int {
-	return int(((int(parser.Data[off+3]) << 24) & 0xff000000) |
+	return int(int((int64(parser.Data[off+3])<<24)&0xff000000) |
 		((int(parser.Data[off+2]) << 16) & 0x00ff0000) |
 		((int(parser.Data[off+1]) << 8) & 0x0000ff00) |
 		((int(parser.Data[off+0]) << 0) & 0x000000ff))

@@ -1,7 +1,10 @@
 package axmlParser
 
 type AppNameListener struct {
-	Name string
+	PackageName      string
+	ActivityName     string
+	tempActivityName string
+	findMainActivity bool
 }
 
 func (listener *AppNameListener) StartDocument() {
@@ -56,14 +59,41 @@ func (listener *AppNameListener) EndPrefixMapping(prefix, uri string) {}
  */
 func (listener *AppNameListener) StartElement(uri, localName, qName string,
 	attrs []*Attribute) {
-	if localName != "application" {
+	if listener.findMainActivity {
 		return
 	}
+
+	if localName == "manifest" {
+		for _, attr := range attrs {
+			if attr.Name == "package" {
+				listener.PackageName = attr.Value
+				return
+			}
+		}
+		return
+	}
+
+	if localName == "activity" {
+		for _, attr := range attrs {
+			if attr.Name == "name" && attr.Prefix == "android" &&
+				attr.Namespace == "http://schemas.android.com/apk/res/android" {
+				listener.tempActivityName = attr.Value
+				break
+			}
+		}
+	}
+
+	if localName != "action" {
+		return
+	}
+
+	//fmt.Println(uri, localName, qName)
 	for _, attr := range attrs {
-		if attr.Name == "name" &&
-			attr.Prefix == "android" &&
-			attr.Namespace == "http://schemas.android.com/apk/res/android" {
-			listener.Name = attr.Value
+		if attr.Name == "name" && attr.Prefix == "android" &&
+			attr.Namespace == "http://schemas.android.com/apk/res/android" &&
+			attr.Value == "android.intent.action.MAIN" {
+			listener.ActivityName = listener.tempActivityName
+			listener.findMainActivity = true
 			break
 		}
 	}

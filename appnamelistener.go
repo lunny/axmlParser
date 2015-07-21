@@ -2,6 +2,8 @@ package axmlParser
 
 type AppNameListener struct {
 	PackageName      string
+	VersionName      string
+	VersionCode      string
 	ActivityName     string
 	tempActivityName string
 	findMainActivity bool
@@ -65,9 +67,16 @@ func (listener *AppNameListener) StartElement(uri, localName, qName string,
 
 	if localName == "manifest" {
 		for _, attr := range attrs {
-			if attr.Name == "package" {
+			switch attr.Name {
+			case "package":
 				listener.PackageName = attr.Value
-				return
+				break
+			case "versionCode":
+				listener.VersionCode = attr.Value
+				break
+			case "versionName":
+				listener.VersionName = attr.Value
+				break
 			}
 		}
 		return

@@ -277,7 +277,7 @@ func (parser *Parser) parseAttribute() *Attribute {
 	attr := new(Attribute)
 	attr.Name = parser.getString(attrNameIdx)
 
-	if int64(attrNSIdx) == 0xFFFFFFFF {
+	if uint32(attrNSIdx) == 0xFFFFFFFF {
 		attr.Namespace = ""
 		attr.Prefix = ""
 	} else {
@@ -288,7 +288,7 @@ func (parser *Parser) parseAttribute() *Attribute {
 		}
 	}
 
-	if int64(attrValueIdx) == 0xFFFFFFFF {
+	if uint32(attrValueIdx) == 0xFFFFFFFF {
 		attr.Value = parser.getAttributeValue(attrType, attrData)
 	} else {
 		attr.Value = parser.getString(attrValueIdx)

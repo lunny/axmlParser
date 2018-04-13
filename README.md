@@ -15,6 +15,20 @@ Usage
 ------
 
 ```Go
-listener := new(AppNameListener)
-_, err := ParseApk(apkfilepath, listener)
+package main
+
+import (
+	"fmt"
+
+	"github.com/studio-b12/axmlParser"
+)
+
+func main() {
+	listener := new(axmlParser.AppNameListener)
+	axmlParser.ParseApk("./updateTool-glorystar-0.3.4.apk", listener)
+
+	fmt.Printf("Name: %v\n", listener.ActivityName)
+	fmt.Printf("VersionCode: %v\n", listener.VersionCode)
+	fmt.Printf("VersionCode: %v\n", listener.VersionName)
+}
 ```

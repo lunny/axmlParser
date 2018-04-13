@@ -5,8 +5,6 @@ import (
 	"encoding/binary"
 	"fmt"
 	"strconv"
-
-	"github.com/go-xweb/log"
 )
 
 const (
@@ -100,7 +98,6 @@ func (parser *Parser) Parse(data []byte) error {
 			parser.listener.EndDocument()
 		default:
 			parser.ParserOffset += WORD_SIZE
-			log.Warnf(TAG+"Unknown word 0x%x @", word0, parser.ParserOffset)
 		}
 	}
 
@@ -147,7 +144,6 @@ func (parser *Parser) parseStringTable() {
 	}
 
 	if styleOffset > 0 {
-		log.Warn(TAG, "Unread styles")
 		for i := 0; i < parser.StylesCount; i++ {
 			// TODO read the styles ???
 		}
@@ -460,8 +456,6 @@ func (parser *Parser) getAttributeValue(tpe int, data int) string {
 	case TYPE_ATTR_REF:
 		res = fmt.Sprintf("?id/0x%08X", data)
 	default:
-		log.Warnf(TAG+"(type=%d) : %v (0x%08X) @%d", tpe, data,
-			data, parser.ParserOffset)
 		res = fmt.Sprintf("%08X/0x%08X", tpe, data)
 	}
 

@@ -15,6 +15,20 @@ Usage
 ------
 
 ```Go
-listener := new(AppNameListener)
-_, err := ParseApk(apkfilepath, listener)
+package main
+
+import (
+	"fmt"
+
+	"github.com/lunny/axmlParser"
+)
+
+func main() {
+	listener := new(axmlParser.AppNameListener)
+	axmlParser.ParseApk("./myApp.apk", listener)
+
+	fmt.Printf("ActivityName: %v\n", listener.ActivityName)
+	fmt.Printf("VersionCode: %v\n", listener.VersionCode)
+	fmt.Printf("VersionName: %v\n", listener.VersionName)
+}
 ```
